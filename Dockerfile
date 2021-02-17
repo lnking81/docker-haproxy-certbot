@@ -1,9 +1,9 @@
 # HAProxy 2.0.3 with Certbot
-FROM alpine:3.10
+FROM alpine:3.13
 
-ENV HAPROXY_MAJOR 2.0
-ENV HAPROXY_VERSION 2.0.3
-ENV HAPROXY_SHA256 aac1ff3e5079997985b6560f46bf265447d0cd841f11c4d77f15942c9fe4b770
+ENV HAPROXY_MAJOR 2.3
+ENV HAPROXY_VERSION 2.3.5
+ENV HAPROXY_SHA256 7924539530bbf555829c7f5886be0b7fcf8d9c8ffe0867b7010beb670abfbe4b
 
 RUN set -x && apk add --no-cache --virtual .build-deps \
     ca-certificates \
@@ -16,6 +16,8 @@ RUN set -x && apk add --no-cache --virtual .build-deps \
     openssl-dev \
     pcre2-dev \
     readline-dev \
+    libexecinfo-dev \
+    libexecinfo \
     tar \
     zlib-dev \
   && wget -O haproxy.tar.gz "https://www.haproxy.org/download/${HAPROXY_MAJOR}/src/haproxy-${HAPROXY_VERSION}.tar.gz" \
@@ -24,7 +26,7 @@ RUN set -x && apk add --no-cache --virtual .build-deps \
   && tar -xzf haproxy.tar.gz -C /usr/src/haproxy --strip-components=1 \
   && rm haproxy.tar.gz \
   && makeOpts=' \
-    TARGET=linux-glibc \
+    TARGET=linux-musl \
     USE_GETADDRINFO=1 \
 		USE_LUA=1 LUA_INC=/usr/include/lua5.3 LUA_LIB=/usr/lib/lua5.3 \
     USE_OPENSSL=1 \
